@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 
 class Product extends Equatable {
@@ -6,8 +8,10 @@ class Product extends Equatable {
   final String name;
   final String category;
   final String description;
-  final String imageUrl;
+  final List<File> imageFile;
   final double price;
+  final String size;
+  final String color;
 
   const Product({
     required this.id,
@@ -15,8 +19,10 @@ class Product extends Equatable {
     required this.name,
     required this.category,
     required this.description,
-    required this.imageUrl,
+    required this.imageFile,
     required this.price,
+    required this.size, 
+    required this.color, 
   });
 
   factory Product.fromSnapshot(Map<String, dynamic> snap) {
@@ -26,12 +32,12 @@ class Product extends Equatable {
       name: snap['name'],
       category: snap['category'],
       description: snap['description'],
-      imageUrl: snap['imageUrl'],
-      price: snap['price'],
+      imageFile: snap['imageFilr'],
+      price: snap['price'], color: snap['color'], size: snap['size'],
     );
   }
 
   @override
   List<Object?> get props =>
-      [id, clinicId, name, category, description, imageUrl, price];
+      [id, clinicId, name, category, description, imageFile, price, color, size];
 }
