@@ -10,9 +10,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-import 'category_model.dart';
-import 'place_modal.dart';
-import 'product_model.dart';
+import 'models.dart';
 
 class Clinic extends Equatable {
   final String id;
@@ -21,6 +19,7 @@ class Clinic extends Equatable {
   final String description;
   final List<Category> categories;
   final List<Product> products;
+  final List<Service> services;
   final double deliveryFee;
   final double distance;
   final Place ?address;
@@ -34,6 +33,7 @@ class Clinic extends Equatable {
     required this.imageFile,
     required this.categories,
     required this.products,
+    required this.services,
     this.address,
     this.deliveryFee = 10,
     this.distance = 15,
@@ -57,7 +57,12 @@ class Clinic extends Equatable {
         },
       ).toList(),
       address: Place.fromJson(snap['address']),
-      isOpen: snap['isOpen']
+      isOpen: snap['isOpen'],
+      services: (snap['services'] as List).map(
+        (service) {
+          return Service.fromSnapshot(service);
+        },
+      ).toList(),
     );
   }
 
@@ -73,6 +78,7 @@ class Clinic extends Equatable {
       deliveryFee,
       distance,
       isOpen,
+      services,
     ];
   }
 }
