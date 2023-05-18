@@ -297,7 +297,32 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                 ),
                               ),
                               Space(8),
-                              Icon(Icons.edit, size: 20),
+                              IconButton(onPressed: (){
+                                showDialog(context: context, builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: Container(
+                                      height: 250,
+                                      width: 500,
+                                      padding: const EdgeInsets.all(20),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            CustomTextField(maxLines: 3, title: 'Address', hasTitle: true, initialValue: '', onChanged: (value){}),
+                                            CustomTextField(maxLines: 1, title: 'LandMark', hasTitle: true, initialValue: '', onChanged: (value){}),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.white
+                                              ),
+                                              onPressed: (){
+                                              Navigator.pop(context);
+                                            }, child: Text('Save', style: Theme.of(context).textTheme.headline5!.copyWith(color: Colors.black),), )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
+                              }, icon: Icon(Icons.edit)),
                             ],
                           ),
                         ),
