@@ -43,7 +43,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 child: CircularProgressIndicator(),
               );
             }
-            if(state is UnAuthenticated){
+            if(state is UnAuthenticated || state is PasswordResetSuccess ){
               return Center(
                 child: SingleChildScrollView(
                   child: Container(
@@ -109,7 +109,7 @@ class _SigninScreenState extends State<SigninScreen> {
                           SizedBox(height: 24),
                           TextButton(
                             onPressed: (){
-                              // Navigator.push(context, MaterialPageRoute(builder: (context)=> PasswordResetScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> PasswordResetScreen()));
                             },
                             child: const Text(
                               "Forgot password",

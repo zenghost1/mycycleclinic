@@ -75,7 +75,8 @@ class LandingScreen extends StatelessWidget {
                     width: 130,
                     color: Color(0xFFCCFE00),
                     onTap: () {
-                      SigninScreen().launch(context);
+                      //SigninScreen().launch(context);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => SigninScreen())));
                     },
                   ),
                   16.width,
@@ -88,7 +89,8 @@ class LandingScreen extends StatelessWidget {
                     padding: EdgeInsets.all(16),
                     color: Colors.grey,
                     onTap: () {
-                      SignupScreen().launch(context);
+                      //SignupScreen().launch(context);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => SignupScreen())));
                     },
                   ),
                 ],

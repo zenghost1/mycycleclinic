@@ -89,9 +89,9 @@ class _BMHomeFragmentState extends State<BMHomeFragment> {
                   20.height,
 
                   // To be changed to Listview builder as horizontal list and fetch data from firebase
-                  HorizontalList(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    spacing: 16,
+                  
+                  ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     itemCount: specialOffersList.length,
                     itemBuilder: (context, index) {
                       return BMCommonCardComponent(
@@ -354,3 +354,5 @@ class BMTopServiceHomeComponent extends StatelessWidget {
         });
   }
 }
+
+
