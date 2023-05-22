@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import '../fragments/BMHomeFragment2.dart';
 import 'screens.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../fragments/fragments.dart';
 import '../utils/BMColors.dart';
-
-
 
 class DashboardScreen extends StatefulWidget {
   // bool flag;
@@ -22,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget getFragment() {
     if (selectedTab == 0) {
-      return BMHomeFragment();
+      return BMHomeFragment2();
     } else if (selectedTab == 1) {
       return BMSearchFragment();
     } else if (selectedTab == 2) {

@@ -1,6 +1,6 @@
 export 'BMAppointmentModel.dart';
 export 'BMCommentModel.dart';
-export 'BMCommoncardModel.dart';
+export 'BMCommonCardModel.dart';
 export 'BMDashboardModel.dart';
 export 'BMMasterModel.dart';
 export 'BMMessageModel.dart';

@@ -1,3 +1,3 @@
-export 'BMHomeFragment.dart';
+export 'BMHomeFragment2.dart';
 export 'BMSearchFragment.dart';
 export 'BMRoadAssistanceFragment.dart';
