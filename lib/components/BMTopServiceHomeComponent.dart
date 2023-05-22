@@ -5,22 +5,23 @@ import '../models/BMMasterModel.dart';
 import '../utils/BMCommonWidgets.dart';
 import '../utils/BMDataGenerator.dart';
 
-class BMTopServiceHomeComponent extends StatelessWidget {
-  List<BMMasterModel> topServiceList = getTopServicesHomeList();
+class BMCategoriesHomeComponent extends StatelessWidget {
+  final List<BMMasterModel> topServiceList = getTopServicesHomeList();
 
   @override
   Widget build(BuildContext context) {
     return HorizontalList(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         spacing: 16,
         itemCount: topServiceList.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
               Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                    color: context.cardColor, borderRadius: radius(32)),
+                    color: Colors.grey.withOpacity(0.3),
+                    borderRadius: radius(32)),
                 child: bmCommonCachedNetworkImage(topServiceList[index].image,
                     height: 36),
               ).onTap(() {
@@ -33,4 +34,3 @@ class BMTopServiceHomeComponent extends StatelessWidget {
         });
   }
 }
-

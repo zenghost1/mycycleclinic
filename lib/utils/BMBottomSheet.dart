@@ -168,65 +168,65 @@ void showFilterBottomSheet(BuildContext context) {
       });
 }
 
-void showBookBottomSheet(BuildContext context, BMServiceListModel element) {
-  showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      enableDrag: true,
-      isDismissible: true,
-      shape: RoundedRectangleBorder(borderRadius: radiusOnly(topLeft: 30, topRight: 30)),
-      builder: (context) {
-        return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () {
-                    finish(context);
-                  },
-                  icon: Icon(Icons.cancel_rounded, color: bmTextColorDarkMode),
-                ),
-              ),
-              titleText(title: element.name, size: 24),
-              16.height,
-              Text(
-                "NULL available",
-                style: primaryTextStyle(color:  bmSpecialColorDark),
-              ),
-              20.height,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      titleText(title: element.cost, size: 16, maxLines: 2),
-                      Text(
-                        element.time,
-                        style: secondaryTextStyle(color: bmPrimaryColor),
-                      )
-                    ],
-                  ),
-                  AppButton(
-                    //padding: EdgeInsets.all(0),
-                    shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-                    child: Text('Book Now', style: boldTextStyle(color: Colors.white, size: 12)),
-                    color: bmPrimaryColor,
-                    onTap: () {
-                      // BMCalenderScreen(element: element, isStaffBooking: false).launch(context);
-                    },
-                  ),
-                ],
-              )
-            ],
-          ).paddingAll(16);
-        });
-      });
-}
+// void showBookBottomSheet(BuildContext context, BMServiceListModel element) {
+//   showModalBottomSheet(
+//       context: context,
+//       isScrollControlled: true,
+//       enableDrag: true,
+//       isDismissible: true,
+//       shape: RoundedRectangleBorder(borderRadius: radiusOnly(topLeft: 30, topRight: 30)),
+//       builder: (context) {
+//         return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+//           return Column(
+//             mainAxisSize: MainAxisSize.min,
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Align(
+//                 alignment: Alignment.topRight,
+//                 child: IconButton(
+//                   onPressed: () {
+//                     finish(context);
+//                   },
+//                   icon: Icon(Icons.cancel_rounded, color: bmTextColorDarkMode),
+//                 ),
+//               ),
+//               titleText(title: element.name, size: 24),
+//               16.height,
+//               Text(
+//                 "NULL available",
+//                 style: primaryTextStyle(color:  bmSpecialColorDark),
+//               ),
+//               20.height,
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       titleText(title: element.cost, size: 16, maxLines: 2),
+//                       Text(
+//                         element.time,
+//                         style: secondaryTextStyle(color: bmPrimaryColor),
+//                       )
+//                     ],
+//                   ),
+//                   AppButton(
+//                     //padding: EdgeInsets.all(0),
+//                     shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+//                     child: Text('Book Now', style: boldTextStyle(color: Colors.white, size: 12)),
+//                     color: bmPrimaryColor,
+//                     onTap: () {
+//                       // BMCalenderScreen(element: element, isStaffBooking: false).launch(context);
+//                     },
+//                   ),
+//                 ],
+//               )
+//             ],
+//           ).paddingAll(16);
+//         });
+//       });
+// }
 
 // void showCommentBottomSheet(BuildContext context) {
 //   List<BMCommentModel> list = getCommentsList();
@@ -314,79 +314,79 @@ void showBookBottomSheet(BuildContext context, BMServiceListModel element) {
 //       });
 // }
 
-void showSelectStaffBottomSheet(BuildContext context) {
-  List<BMMasterModel> myMasterList = getMyMastersList();
+// void showSelectStaffBottomSheet(BuildContext context) {
+//   List<BMMasterModel> myMasterList = getMyMastersList();
 
-  int selectedTab = 0;
+//   int selectedTab = 0;
 
-  showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      enableDrag: true,
-      isDismissible: true,
-      shape: RoundedRectangleBorder(borderRadius: radiusOnly(topLeft: 30, topRight: 30)),
-      builder: (context) {
-        return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () {
-                    finish(context);
-                  },
-                  icon: Icon(Icons.cancel_rounded, color: bmTextColorDarkMode),
-                ),
-              ),
-              titleText(title: 'Select Staff', size: 24),
-              16.height,
-              Wrap(
-                children: myMasterList.map((e) {
-                  int index = myMasterList.indexOf(e);
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          bmCommonCachedNetworkImage(e.image, height: 30, width: 30, fit: BoxFit.cover).cornerRadiusWithClipRRect(100),
-                          8.width,
-                          Text(e.name, style: primaryTextStyle(color: bmSpecialColorDark)),
-                        ],
-                      ),
-                      IconButton(
-                        icon: selectedTab == index ? Icon(Icons.check_circle, color: bmPrimaryColor) : Icon(Icons.circle_outlined, color: bmPrimaryColor),
-                        onPressed: () {
-                          selectedTab = index;
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-              50.height,
-              AppButton(
-                shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.call, color: Colors.white),
-                    6.width,
-                    Text('Call Now', style: boldTextStyle(color: Colors.white)),
-                  ],
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: bmPrimaryColor,
-                onTap: () {
-                  finish(context);
-                  // BMCallScreen(image: myMasterList[selectedTab].image).launch(context);
-                },
-              ).center(),
-              30.height,
-            ],
-          ).paddingAll(16);
-        });
-      });
-}
+//   showModalBottomSheet(
+//       context: context,
+//       isScrollControlled: true,
+//       enableDrag: true,
+//       isDismissible: true,
+//       shape: RoundedRectangleBorder(borderRadius: radiusOnly(topLeft: 30, topRight: 30)),
+//       builder: (context) {
+//         return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+//           return Column(
+//             mainAxisSize: MainAxisSize.min,
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Align(
+//                 alignment: Alignment.topRight,
+//                 child: IconButton(
+//                   onPressed: () {
+//                     finish(context);
+//                   },
+//                   icon: Icon(Icons.cancel_rounded, color: bmTextColorDarkMode),
+//                 ),
+//               ),
+//               titleText(title: 'Select Staff', size: 24),
+//               16.height,
+//               Wrap(
+//                 children: myMasterList.map((e) {
+//                   int index = myMasterList.indexOf(e);
+//                   return Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Row(
+//                         children: [
+//                           bmCommonCachedNetworkImage(e.image, height: 30, width: 30, fit: BoxFit.cover).cornerRadiusWithClipRRect(100),
+//                           8.width,
+//                           Text(e.name, style: primaryTextStyle(color: bmSpecialColorDark)),
+//                         ],
+//                       ),
+//                       IconButton(
+//                         icon: selectedTab == index ? Icon(Icons.check_circle, color: bmPrimaryColor) : Icon(Icons.circle_outlined, color: bmPrimaryColor),
+//                         onPressed: () {
+//                           selectedTab = index;
+//                           setState(() {});
+//                         },
+//                       ),
+//                     ],
+//                   );
+//                 }).toList(),
+//               ),
+//               50.height,
+//               AppButton(
+//                 shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+//                 child: Row(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     Icon(Icons.call, color: Colors.white),
+//                     6.width,
+//                     Text('Call Now', style: boldTextStyle(color: Colors.white)),
+//                   ],
+//                 ),
+//                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+//                 color: bmPrimaryColor,
+//                 onTap: () {
+//                   finish(context);
+//                   // BMCallScreen(image: myMasterList[selectedTab].image).launch(context);
+//                 },
+//               ).center(),
+//               30.height,
+//             ],
+//           ).paddingAll(16);
+//         });
+//       });
+// }

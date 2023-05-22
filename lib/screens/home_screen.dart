@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mycycleclinic/screens/roadside_ass_screen.dart';
 import '../fragments/BMHomeFragment2.dart';
 import 'screens.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -25,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } else if (selectedTab == 1) {
       return BMSearchFragment();
     } else if (selectedTab == 2) {
-      return BMRoadAssistanceFragment();
+      return RoadSideAssistance();
     } else if (selectedTab == 3) {
       return ShoppingCart();
     } else {

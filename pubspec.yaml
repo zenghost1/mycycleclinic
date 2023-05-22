@@ -52,6 +52,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/app/
     - assets/images/beauty_master/
   #   - images/a_dot_ham.jpeg
 

@@ -12,6 +12,15 @@ class Stores
     this.storeEmail,
   });
 
+  factory Stores.fromSnapshot(Map<String, dynamic> snap) {
+    return Stores(
+      storeUid: snap['id'].toString(),
+      storeName: snap['service_name'],
+      storeEmail: snap['description'],
+      storeAvatarUrl: snap['price'],
+    );
+  }
+
   Stores.fromJson(Map<String, dynamic> json)
   {
     storeUid = json["storeUid"];
@@ -29,4 +38,7 @@ class Stores
     data["storeEmail"] = this.storeEmail;
     return data;
   }
+
 }
+
+

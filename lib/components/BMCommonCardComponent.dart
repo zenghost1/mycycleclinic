@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mycycleclinic/screens/single_store_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../models/BMCommonCardModel.dart';
@@ -68,19 +69,19 @@ class _BMCommonCardComponentState extends State<BMCommonCardComponent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      4.width,
-                      Text(widget.element.rating!, style: boldTextStyle()),
-                      2.width,
-                      Text('(${widget.element.comments!})',
-                          style: secondaryTextStyle(color: bmPrimaryColor)),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Icon(
+                  //       Icons.star,
+                  //       color: Colors.amber,
+                  //     ),
+                  //     4.width,
+                  //     Text(widget.element.rating!, style: boldTextStyle()),
+                  //     2.width,
+                  //     Text('(${widget.element.comments!})',
+                  //         style: secondaryTextStyle(color: bmPrimaryColor)),
+                  //   ],
+                  // ),
                   Text(widget.element.distance!,
                       style: secondaryTextStyle(color: bmPrimaryColor)),
                 ],
@@ -93,7 +94,7 @@ class _BMCommonCardComponentState extends State<BMCommonCardComponent> {
             right: 15,
             child: Icon(
               Icons.favorite,
-              color: widget.element.liked! ? Colors.amber : bmTextColorDarkMode,
+              // color: widget.element.liked! ? Colors.amber : bmTextColorDarkMode,
               size: 24,
             ).onTap(() {
               widget.element.liked = !widget.element.liked.validate();
@@ -106,7 +107,7 @@ class _BMCommonCardComponentState extends State<BMCommonCardComponent> {
         ],
       ),
     ).onTap(() {
-      // BMSingleComponentScreen(element: widget.element).launch(context);
+      BMSingleComponentScreen(element: widget.element).launch(context);
     });
   }
 }

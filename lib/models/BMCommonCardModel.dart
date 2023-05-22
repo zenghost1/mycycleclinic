@@ -1,4 +1,5 @@
 class BMCommonCardModel {
+  String storeUid;
   String image;
   String title;
   String? subtitle;
@@ -10,7 +11,9 @@ class BMCommonCardModel {
   bool? liked;
 
   BMCommonCardModel(
-      {required this.image,
+      {
+        required this.storeUid,
+      required this.image,
       required this.title,
       this.subtitle,
       this.comments,
