@@ -5,8 +5,9 @@ import 'screens.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String weekday;
-
-  const PaymentScreen({Key? key, required this.weekday}) : super(key: key);
+  final double amount;
+  const PaymentScreen({Key? key, required this.weekday, required this.amount})
+      : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -17,7 +18,6 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-
   @override
   // void initState() {
   //   if (widget.list[0].date == "") {
@@ -34,9 +34,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Text(
-          "Payment",
+          "${widget.amount}",
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20, color: Colors.black),
+          style: TextStyle(
+              fontWeight: FontWeight.w900, fontSize: 20, color: Colors.black),
         ),
       ),
       bottomSheet: BottomSheet(
@@ -57,7 +58,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Rs. 450",
+                    "${widget.amount}",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -99,7 +100,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Space(75),
             PaymentContainer(title: "Net Banking", icon: Icons.food_bank),
             Space(16),
-            PaymentContainer(title: "Cash On Delivery", icon: Icons.delivery_dining),
+            PaymentContainer(
+                title: "Cash On Delivery", icon: Icons.delivery_dining),
             Space(75),
           ],
         ),

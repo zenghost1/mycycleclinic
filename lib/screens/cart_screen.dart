@@ -194,6 +194,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                   MaterialPageRoute(
                                     builder: (context) => PaymentScreen(
                                       weekday: 'Thursday',
+                                      amount: total,
                                     ),
                                   ),
                                 );
