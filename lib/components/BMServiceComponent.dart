@@ -3,11 +3,42 @@ import 'package:nb_utils/nb_utils.dart';
 import '../models/BMServiceListModel.dart';
 import '../utils/BMColors.dart';
 import '../utils/BMCommonWidgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
 
-class BMServiceComponent extends StatelessWidget {
+final _firebase = FirebaseFirestorePlatform.instance;
+
+User? loggineduser;
+
+class BMServiceComponent extends StatefulWidget {
   BMServiceListModel element;
 
   BMServiceComponent({required this.element});
+
+  @override
+  State<BMServiceComponent> createState() => _BMServiceComponentState();
+}
+
+class _BMServiceComponentState extends State<BMServiceComponent> {
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    getuser();
+  }
+
+  void getuser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggineduser = user;
+        print(loggineduser?.email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +55,13 @@ class BMServiceComponent extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleText(title: element.name, size: 14, maxLines: 2),
+              titleText(title: widget.element.name, size: 14, maxLines: 2),
               12.height,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'RS.${element.cost}',
+                    'RS.${widget.element.cost}',
                     style: secondaryTextStyle(
                       color: bmPrimaryColor,
                       size: 12,
@@ -70,6 +101,18 @@ class BMServiceComponent extends StatelessWidget {
                 color: bmPrimaryColor,
                 onTap: () {
                   // showBookBottomSheet(context, element);
+                  print(widget.element.image);
+                  _firebase
+                      .collection("cart")
+                      .doc("${loggineduser?.email}")
+                      .collection("cart")
+                      .doc("${widget.element.name}")
+                      .set({
+                    'cost': widget.element.cost.toDouble(),
+                    'count': 1,
+                    'imageurl': widget.element.image,
+                    'name': widget.element.name
+                  });
                 },
               ),
             ],

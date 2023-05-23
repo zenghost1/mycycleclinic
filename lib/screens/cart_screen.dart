@@ -1,28 +1,42 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import '../blocs/blocs.dart';
 import '../datamodels/models.dart';
 import '../widgets/widgets.dart';
 import 'screens.dart';
+import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
+
+final _firebase = FirebaseFirestorePlatform.instance;
+User? loggineduser;
 
 class ShoppingCart extends StatefulWidget {
   @override
   _ShoppingCartState createState() => _ShoppingCartState();
-
-  
 }
 
 class _ShoppingCartState extends State<ShoppingCart> {
-
   TextEditingController textEditingController = TextEditingController();
 
   final AddressBloc addressBloc = AddressBloc();
-
+  final _auth = FirebaseAuth.instance;
+  double totalamount = 0.00;
   @override
   void initState() {
     super.initState();
+    getuser();
+  }
+
+  void getuser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggineduser = user;
+        print(loggineduser?.email);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -33,9 +47,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
   }
 
   late List<ShopItem> cartItems;
-  double totalAmount = 0;
+  double totalAmount = 0.00;
   void calculateTotalAmount(List<ShopItem> list) {
-    double res = 0;
+    double res = 0.00;
 
     list.forEach((element) {
       res = res + element.price * element.quantity;
@@ -136,7 +150,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "\Rs. ${totalAmount.toStringAsFixed(2)}",
+                        "\Rs. ${totalamount.toStringAsFixed(2)}",
+                        // "\Rs. ${totalAmount.toStringAsFixed(2)}",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -175,140 +190,174 @@ class _ShoppingCartState extends State<ShoppingCart> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: cartItems.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                left: 15.0, right: 15, bottom: 5),
-                            child: Container(
-                              height: 120,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.network(
-                                          cartItems[index].imageUrl,
-                                          height: 64,
-                                          width: 64,
-                                        ),
-                                        SizedBox(width: 20),
-                                        Text(
-                                          cartItems[index].title,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 25),
-                                        ),
-                                        Spacer(),
-                                        IconButton(
-                                          icon: Icon(Icons.cancel),
-                                          onPressed: () {
-                                            setState(() {
-                                              if (state
-                                                  is ShopPageLoadedState) {
-                                                state.cartData.shopitems
-                                                    .removeAt(index);
-                                                calculateTotalAmount(cartItems);
-                                                BlocProvider.of<ShopBloc>(
-                                                    context)
-                                                  ..add(ItemDeleteCartEvent(
-                                                      cartItems: state
-                                                          .cartData.shopitems,
-                                                      index: index));
-                                              } else if (state
-                                                  is ItemAddedCartState) {
-                                                state.cartItems.removeAt(index);
-                                                calculateTotalAmount(cartItems);
-
-                                                BlocProvider.of<ShopBloc>(
-                                                    context)
-                                                  ..add(ItemDeleteCartEvent(
-                                                      cartItems:
-                                                          state.cartItems,
-                                                      index: index));
-                                              } else if (state
-                                                  is ItemDeletingCartState) {
-                                                state.cartItems.removeAt(index);
-                                                calculateTotalAmount(cartItems);
-
-                                                BlocProvider.of<ShopBloc>(
-                                                    context)
-                                                  ..add(ItemDeleteCartEvent(
-                                                      cartItems:
-                                                          state.cartItems,
-                                                      index: index));
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        //Spacer(),
-                                        IconButton(
-                                          icon: Icon(Icons.remove),
-                                          onPressed: () {
-                                            if (cartItems[index].quantity > 0)
-                                              setState(() {
-                                                calculateTotalAmount(cartItems);
-                                                cartItems[index].quantity--;
-                                              });
-                                          },
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                          width: 30,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.black,
-                                                    width: 0.5)),
-                                            child: Text(
-                                              cartItems[index]
-                                                  .quantity
-                                                  .toString(),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.add),
-                                          onPressed: () {
-                                            setState(() {
-                                              calculateTotalAmount(cartItems);
-                                              cartItems[index].quantity++;
-                                            });
-                                          },
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          '\Rs.${cartItems[index].price * cartItems[index].quantity} ',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                      StreamBuilder<QuerySnapshotPlatform>(
+                          stream: _firebase
+                              .collection("cart")
+                              .doc("${loggineduser?.email}")
+                              .collection("cart")
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.lightBlueAccent,
                                 ),
+                              );
+                            }
+                            final messages = snapshot.data?.docs;
+                            List<CustomCard> messagewidget = [];
+                            for (var message in messages!) {
+                              final double cost = message.get("cost");
+                              final count = message.get("count");
+                              final imageurl = message.get("imageurl");
+                              final name = message.get("name");
+                              var mess =
+                                  CustomCard(cost, count, imageurl, name);
+                              messagewidget.add(mess);
+                            }
+                            return Container(
+                              height: 300,
+                              child: ListView(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 20.0),
+                                children: messagewidget,
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          }),
+                      // ListView.builder(
+                      //   shrinkWrap: true,
+                      //   itemCount: cartItems.length,
+                      //   itemBuilder: (BuildContext context, int index) {
+                      //     return Padding(
+                      //       padding: const EdgeInsets.only(
+                      //           left: 15.0, right: 15, bottom: 5),
+                      //       child: Container(
+                      //         height: 120,
+                      //         width: double.infinity,
+                      //         decoration: BoxDecoration(
+                      //           color: Colors.grey.shade200,
+                      //           borderRadius: BorderRadius.circular(10),
+                      //         ),
+                      //         child: Padding(
+                      //           padding:
+                      //               const EdgeInsets.symmetric(horizontal: 10),
+                      //           child: Column(
+                      //             children: [
+                      //               Row(
+                      //                 children: [
+                      //                   Image.network(
+                      //                     cartItems[index].imageUrl,
+                      //                     height: 64,
+                      //                     width: 64,
+                      //                   ),
+                      //                   SizedBox(width: 20),
+                      //                   Text(
+                      //                     cartItems[index].title,
+                      //                     style: TextStyle(
+                      //                         fontWeight: FontWeight.bold,
+                      //                         fontSize: 25),
+                      //                   ),
+                      //                   Spacer(),
+                      //                   IconButton(
+                      //                     icon: Icon(Icons.cancel),
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         if (state
+                      //                             is ShopPageLoadedState) {
+                      //                           state.cartData.shopitems
+                      //                               .removeAt(index);
+                      //                           calculateTotalAmount(cartItems);
+                      //                           BlocProvider.of<ShopBloc>(
+                      //                               context)
+                      //                             ..add(ItemDeleteCartEvent(
+                      //                                 cartItems: state
+                      //                                     .cartData.shopitems,
+                      //                                 index: index));
+                      //                         } else if (state
+                      //                             is ItemAddedCartState) {
+                      //                           state.cartItems.removeAt(index);
+                      //                           calculateTotalAmount(cartItems);
+                      //
+                      //                           BlocProvider.of<ShopBloc>(
+                      //                               context)
+                      //                             ..add(ItemDeleteCartEvent(
+                      //                                 cartItems:
+                      //                                     state.cartItems,
+                      //                                 index: index));
+                      //                         } else if (state
+                      //                             is ItemDeletingCartState) {
+                      //                           state.cartItems.removeAt(index);
+                      //                           calculateTotalAmount(cartItems);
+                      //
+                      //                           BlocProvider.of<ShopBloc>(
+                      //                               context)
+                      //                             ..add(ItemDeleteCartEvent(
+                      //                                 cartItems:
+                      //                                     state.cartItems,
+                      //                                 index: index));
+                      //                         }
+                      //                       });
+                      //                     },
+                      //                   ),
+                      //                 ],
+                      //               ),
+                      //               Row(
+                      //                 mainAxisAlignment:
+                      //                     MainAxisAlignment.start,
+                      //                 children: [
+                      //                   //Spacer(),
+                      //                   IconButton(
+                      //                     icon: Icon(Icons.remove),
+                      //                     onPressed: () {
+                      //                       if (cartItems[index].quantity > 0)
+                      //                         setState(() {
+                      //                           calculateTotalAmount(cartItems);
+                      //                           cartItems[index].quantity--;
+                      //                         });
+                      //                     },
+                      //                   ),
+                      //                   SizedBox(
+                      //                     height: 20,
+                      //                     width: 30,
+                      //                     child: Container(
+                      //                       alignment: Alignment.center,
+                      //                       decoration: BoxDecoration(
+                      //                           border: Border.all(
+                      //                               color: Colors.black,
+                      //                               width: 0.5)),
+                      //                       child: Text(
+                      //                         cartItems[index]
+                      //                             .quantity
+                      //                             .toString(),
+                      //                         textAlign: TextAlign.center,
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                   IconButton(
+                      //                     icon: Icon(Icons.add),
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         calculateTotalAmount(cartItems);
+                      //                         cartItems[index].quantity++;
+                      //                       });
+                      //                     },
+                      //                   ),
+                      //                   Spacer(),
+                      //                   Text(
+                      //                     '\Rs.${cartItems[index].price * cartItems[index].quantity} ',
+                      //                     style: TextStyle(
+                      //                         fontWeight: FontWeight.bold,
+                      //                         fontSize: 20),
+                      //                   )
+                      //                 ],
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                       Space(8),
                       Padding(
                         padding: EdgeInsets.only(left: 15, right: 15),
@@ -321,7 +370,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
                             child: BlocBuilder<AddressBloc, AddressState>(
                               bloc: addressBloc,
                               builder: (context, state) {
-                                if(state is AddressInitial){
+                                if (state is AddressInitial) {
                                   return Row(
                                     children: [
                                       Icon(Icons.location_on, size: 20),
@@ -339,7 +388,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                   fontSize: 21),
                                             ),
                                             Space(4),
-                                            if(textEditingController.text.isNotEmpty) 
+                                            if (textEditingController
+                                                .text.isNotEmpty)
                                               Text(
                                                 "${state.inputText}",
                                                 textAlign: TextAlign.start,
@@ -348,7 +398,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                   fontSize: 16,
                                                 ),
                                               ),
-                                            if(textEditingController.text.isEmpty) 
+                                            if (textEditingController
+                                                .text.isEmpty)
                                               Text(
                                                 "2911, sec 9/11, Hisar",
                                                 textAlign: TextAlign.start,
@@ -365,7 +416,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                           onPressed: () {
                                             showDialog(
                                                 context: context,
-                                                builder: (BuildContext context) {
+                                                builder:
+                                                    (BuildContext context) {
                                                   return Dialog(
                                                     child: Container(
                                                       height: 250,
@@ -378,20 +430,28 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                         child: Column(
                                                           children: [
                                                             CustomTextField(
-                                                                controller: textEditingController,
+                                                                controller:
+                                                                    textEditingController,
                                                                 maxLines: 3,
-                                                                title: 'Address',
+                                                                title:
+                                                                    'Address',
                                                                 hasTitle: true,
-                                                                initialValue: '',
+                                                                initialValue:
+                                                                    '',
                                                                 onChanged:
                                                                     (value) {
-                                                                      addressBloc.add(GetInput(textEditingController.text));
-                                                                    }),
+                                                                  addressBloc.add(
+                                                                      GetInput(
+                                                                          textEditingController
+                                                                              .text));
+                                                                }),
                                                             CustomTextField(
                                                                 maxLines: 1,
-                                                                title: 'LandMark',
+                                                                title:
+                                                                    'LandMark',
                                                                 hasTitle: true,
-                                                                initialValue: '',
+                                                                initialValue:
+                                                                    '',
                                                                 onChanged:
                                                                     (value) {}),
                                                             ElevatedButton(
@@ -403,7 +463,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                               onPressed: () {
                                                                 Navigator.pop(
                                                                     context);
-                                                                    addressBloc.add(GetInput(textEditingController.text));
+                                                                addressBloc.add(
+                                                                    GetInput(
+                                                                        textEditingController
+                                                                            .text));
                                                               },
                                                               child: Text(
                                                                 'Save',
@@ -426,10 +489,10 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                           icon: Icon(Icons.edit)),
                                     ],
                                   );
-                                
-                                }
-                                else{
-                                  return SizedBox(height: 10,);
+                                } else {
+                                  return SizedBox(
+                                    height: 10,
+                                  );
                                 }
                               },
                             ),
@@ -553,6 +616,179 @@ class _ShoppingCartState extends State<ShoppingCart> {
                 ),
         );
       },
+    );
+  }
+}
+
+class CustomCard extends StatelessWidget {
+  CustomCard(this.cost, this.count, this.imageurl, this.name);
+  final double cost;
+  final int count;
+  final String imageurl;
+  final String name;
+  @override
+  Widget build(BuildContext context) {
+    final url = 'https://picsum.photos/200/300';
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 15, bottom: 5),
+      child: Container(
+        height: 120,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Image.network(imageurl, height: 64, width: 64),
+                  SizedBox(width: 20),
+                  Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      _firebase
+                          .collection("cart")
+                          .doc("${loggineduser?.email}")
+                          .collection("cart")
+                          .doc(name)
+                          .delete();
+                    },
+                    //   setState(() {
+                    //     if (state
+                    //     is ShopPageLoadedState) {
+                    //       state.cartData.shopitems
+                    //           .removeAt(index);
+                    //       calculateTotalAmount(
+                    //           cartItems);
+                    //       BlocProvider.of<
+                    //           ShopBloc>(context)
+                    //         ..add(
+                    //             ItemDeleteCartEvent(
+                    //                 cartItems: state
+                    //                     .cartData
+                    //                     .shopitems,
+                    //                 index: index));
+                    //     } else if (state
+                    //     is ItemAddedCartState) {
+                    //       state.cartItems
+                    //           .removeAt(index);
+                    //       calculateTotalAmount(
+                    //           cartItems);
+                    //
+                    //       BlocProvider.of<
+                    //           ShopBloc>(context)
+                    //         ..add(
+                    //             ItemDeleteCartEvent(
+                    //                 cartItems: state
+                    //                     .cartItems,
+                    //                 index: index));
+                    //     } else if (state
+                    //     is ItemDeletingCartState) {
+                    //       state.cartItems
+                    //           .removeAt(index);
+                    //       calculateTotalAmount(
+                    //           cartItems);
+                    //
+                    //       BlocProvider.of<
+                    //           ShopBloc>(context)
+                    //         ..add(
+                    //             ItemDeleteCartEvent(
+                    //                 cartItems: state
+                    //                     .cartItems,
+                    //                 index: index));
+                    //     }
+                    //   });
+                    // },
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  //Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.remove),
+                    onPressed: () {
+                      if (count > 0) {
+                        int countnew = count - 1;
+                        _firebase
+                            .collection("cart")
+                            .doc("${loggineduser?.email}")
+                            .collection("cart")
+                            .doc("$name")
+                            .set({
+                          'cost': cost,
+                          'count': countnew,
+                          'imageurl': imageurl,
+                          'name': name
+                        });
+                      }
+
+                      // if (cartItems[index]
+                      //     .quantity >
+                      //     0)
+                      //   setState(() {
+                      //     calculateTotalAmount(
+                      //         cartItems);
+                      //     cartItems[index]
+                      //         .quantity--;
+                      //   });
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                    width: 30,
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black, width: 0.5)),
+                      child: Text(
+                        count.toString(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      int countnew = count + 1;
+                      _firebase
+                          .collection("cart")
+                          .doc("${loggineduser?.email}")
+                          .collection("cart")
+                          .doc("$name")
+                          .set({
+                        'cost': cost,
+                        'count': countnew,
+                        'imageurl': imageurl,
+                        'name': name
+                      });
+                      // setState(() {
+                      //   calculateTotalAmount(
+                      //       cartItems);
+                      //   cartItems[index].quantity++;
+                      // });
+                    },
+                  ),
+                  Spacer(),
+                  Text(
+                    "₹${cost * count}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
