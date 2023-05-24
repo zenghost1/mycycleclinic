@@ -521,27 +521,17 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                         discount = 0;
                                                       });
                                                     }
+
                                                     if (coupon.isNotEmpty) {
-                                                      if (fetch(coupon) ==
-                                                          coupon) {
+                                                      var doc =
+                                                          await fetch(coupon);
+                                                      if (doc?.get("code") ==
+                                                          coupon.toString()) {
                                                         var doc =
                                                             await fetch(coupon);
                                                         setState(() {
                                                           discount = doc
                                                               ?.get("amount");
-                                                        });
-                                                      } else {
-                                                        setState(() {
-                                                          var snackBar =
-                                                              SnackBar(
-                                                            content: Text(
-                                                                'enter valid coupon'),
-                                                          );
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                                  snackBar);
-                                                          discount = 0;
                                                         });
                                                       }
                                                     }
