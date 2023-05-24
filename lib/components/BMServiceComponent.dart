@@ -21,12 +21,29 @@ class BMServiceComponent extends StatefulWidget {
 
 class _BMServiceComponentState extends State<BMServiceComponent> {
   final _auth = FirebaseAuth.instance;
-
+  int add = 0;
   @override
   void initState() {
     super.initState();
     getuser();
   }
+
+  // Future<String?> fetch(String name) async {
+  //   var doc = await _firebase
+  //       .collection("cart")
+  //       .doc("${loggineduser?.email}")
+  //       .collection("cart")
+  //       .get();
+  //   DocumentSnapshotPlatform foundDoc =
+  //       doc.docs.firstWhere((element) => element.get("name") == name,orElse: () => );
+  //   if (foundDoc. == true) {
+  //     return foundDoc.get("name");
+  //   } else {
+  //     return "n";
+  //   }
+  //
+  //   // print(foundDoc.get("name"));
+  // }
 
   void getuser() async {
     try {
@@ -96,10 +113,16 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
                 padding: EdgeInsets.all(0),
                 shapeBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32)),
-                child: Text('Book',
+                child: Text("ADD",
+                    // fetch(widget.element.name) == widget.element.name
+                    //     ? 'ADDED'
+                    //     : 'ADD',
                     style: boldTextStyle(color: Colors.white, size: 12)),
                 color: bmPrimaryColor,
                 onTap: () {
+                  var snackBar = SnackBar(
+                    content: Text('Your Item is added to the Cart'),
+                  );
                   // showBookBottomSheet(context, element);
                   print(widget.element.image);
                   _firebase
@@ -112,7 +135,9 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
                     'count': 1,
                     'imageurl': widget.element.image,
                     'name': widget.element.name
-                  });
+                  }).then((value) => {
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar)
+                          });
                 },
               ),
             ],

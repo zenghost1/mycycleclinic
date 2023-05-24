@@ -150,20 +150,21 @@ class _ShoppingCartState extends State<ShoppingCart> {
                 backgroundColor: Colors.white,
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
+                  centerTitle: true,
                   title: Text(
                     'Shopping Cart',
                     style: TextStyle(color: Colors.black),
                   ),
                   elevation: 0,
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  // leading: IconButton(
+                  //   icon: Icon(
+                  //     Icons.arrow_back,
+                  //     color: Colors.black,
+                  //   ),
+                  //   onPressed: () {
+                  //     Navigator.pop(context);
+                  //   },
+                  // ),
                 ),
                 bottomSheet: BottomSheet(
                   elevation: 10,
@@ -318,7 +319,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                         ),
                                                         Space(4),
                                                         Text(
-                                                          "${addres[1]}",
+                                                          addres.length != 0
+                                                              ? "${addres[1]}"
+                                                              : "enter your name",
                                                           textAlign:
                                                               TextAlign.start,
                                                           style: TextStyle(
@@ -339,7 +342,9 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                         ),
                                                         Space(4),
                                                         Text(
-                                                          "${addres[2]}",
+                                                          addres.length != 0
+                                                              ? "${addres[2]}"
+                                                              : "enter your number",
                                                           textAlign:
                                                               TextAlign.start,
                                                           style: TextStyle(
