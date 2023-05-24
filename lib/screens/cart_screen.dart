@@ -510,16 +510,40 @@ class _ShoppingCartState extends State<ShoppingCart> {
                                                   onPressed: () async {
                                                     if (coupon.isEmpty) {
                                                       setState(() {
+                                                        var snackBar = SnackBar(
+                                                          content: Text(
+                                                              'enter valid coupon'),
+                                                        );
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                snackBar);
                                                         discount = 0;
                                                       });
                                                     }
                                                     if (coupon.isNotEmpty) {
-                                                      var doc =
-                                                          await fetch(coupon);
-                                                      setState(() {
-                                                        discount =
-                                                            doc?.get("amount");
-                                                      });
+                                                      if (fetch(coupon) ==
+                                                          coupon) {
+                                                        var doc =
+                                                            await fetch(coupon);
+                                                        setState(() {
+                                                          discount = doc
+                                                              ?.get("amount");
+                                                        });
+                                                      } else {
+                                                        setState(() {
+                                                          var snackBar =
+                                                              SnackBar(
+                                                            content: Text(
+                                                                'enter valid coupon'),
+                                                          );
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                                  snackBar);
+                                                          discount = 0;
+                                                        });
+                                                      }
                                                     }
                                                     print(coupon);
                                                     // if (doc == null) {

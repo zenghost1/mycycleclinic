@@ -21,25 +21,32 @@ class BMServiceComponent extends StatefulWidget {
 
 class _BMServiceComponentState extends State<BMServiceComponent> {
   final _auth = FirebaseAuth.instance;
-  int add = 0;
+
   @override
   void initState() {
     super.initState();
     getuser();
   }
 
-  // Future<String?> fetch(String name) async {
+  // Future<int?> fetch(String name) async {
+  //   int add = 0;
   //   var doc = await _firebase
   //       .collection("cart")
   //       .doc("${loggineduser?.email}")
   //       .collection("cart")
   //       .get();
   //   DocumentSnapshotPlatform foundDoc =
-  //       doc.docs.firstWhere((element) => element.get("name") == name,orElse: () => );
-  //   if (foundDoc. == true) {
-  //     return foundDoc.get("name");
+  //       doc.docs.firstWhere((element) => element.get("name") == name);
+  //   if (foundDoc.exists == true) {
+  //     setState(() {
+  //       add = 1;
+  //     });
+  //     return add;
   //   } else {
-  //     return "n";
+  //     setState(() {
+  //       add = 0;
+  //     });
+  //     return add;
   //   }
   //
   //   // print(foundDoc.get("name"));
@@ -113,15 +120,17 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
                 padding: EdgeInsets.all(0),
                 shapeBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32)),
-                child: Text("ADD",
-                    // fetch(widget.element.name) == widget.element.name
-                    //     ? 'ADDED'
-                    //     : 'ADD',
+                child: Text('ADD',
+                    // fetch(widget.element.name) == 1 ? 'ADDED' : 'ADD',
                     style: boldTextStyle(color: Colors.white, size: 12)),
                 color: bmPrimaryColor,
                 onTap: () {
                   var snackBar = SnackBar(
-                    content: Text('Your Item is added to the Cart'),
+                    dismissDirection: DismissDirection.down,
+                    content: Text(
+                      'Your Item is added to the Cart',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   );
                   // showBookBottomSheet(context, element);
                   print(widget.element.image);
