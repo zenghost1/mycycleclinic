@@ -32,6 +32,7 @@ dependencies:
   cloud_firestore: ^4.7.1
   hive: ^2.2.3
   url_launcher: ^6.1.11
+  collection: ^1.17.1
 
 dev_dependencies:
   flutter_test:

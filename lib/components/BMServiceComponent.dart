@@ -5,6 +5,7 @@ import '../utils/BMColors.dart';
 import '../utils/BMCommonWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
+import 'package:collection/collection.dart';
 
 final _firebase = FirebaseFirestorePlatform.instance;
 
@@ -21,36 +22,36 @@ class BMServiceComponent extends StatefulWidget {
 
 class _BMServiceComponentState extends State<BMServiceComponent> {
   final _auth = FirebaseAuth.instance;
-
+  int add = 0;
   @override
   void initState() {
     super.initState();
     getuser();
   }
 
-  // Future<int?> fetch(String name) async {
-  //   int add = 0;
-  //   var doc = await _firebase
-  //       .collection("cart")
-  //       .doc("${loggineduser?.email}")
-  //       .collection("cart")
-  //       .get();
-  //   DocumentSnapshotPlatform foundDoc =
-  //       doc.docs.firstWhere((element) => element.get("name") == name);
-  //   if (foundDoc.exists == true) {
-  //     setState(() {
-  //       add = 1;
-  //     });
-  //     return add;
-  //   } else {
-  //     setState(() {
-  //       add = 0;
-  //     });
-  //     return add;
-  //   }
-  //
-  //   // print(foundDoc.get("name"));
-  // }
+  void fetch() async {
+    var doc = await _firebase
+        .collection("cart")
+        .doc("${loggineduser?.email}")
+        .collection("cart")
+        .get();
+    DocumentSnapshotPlatform? foundDoc = doc.docs.firstWhereOrNull(
+        (element) => element.get("name") == widget.element.name);
+    if (doc.docs.isEmpty) {
+      setState(() {
+        add = 0;
+      });
+    }
+    if (foundDoc != null) {
+      setState(() {
+        add = 1;
+      });
+    } else if (foundDoc == null) {
+      setState(() {
+        add = 0;
+      });
+    }
+  }
 
   void getuser() async {
     try {
@@ -66,6 +67,7 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
 
   @override
   Widget build(BuildContext context) {
+    fetch();
     return Container(
       decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.2),
@@ -115,40 +117,63 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
                 child: Icon(Icons.info, color: bmPrimaryColor),
               ),
               8.width,
-              AppButton(
-                width: 60,
-                padding: EdgeInsets.all(0),
-                shapeBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32)),
-                child: Text('ADD',
-                    // fetch(widget.element.name) == 1 ? 'ADDED' : 'ADD',
-                    style: boldTextStyle(color: Colors.white, size: 12)),
-                color: bmPrimaryColor,
-                onTap: () {
-                  var snackBar = SnackBar(
-                    dismissDirection: DismissDirection.down,
-                    content: Text(
-                      'Your Item is added to the Cart',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  );
-                  // showBookBottomSheet(context, element);
-                  print(widget.element.image);
-                  _firebase
-                      .collection("cart")
-                      .doc("${loggineduser?.email}")
-                      .collection("cart")
-                      .doc("${widget.element.name}")
-                      .set({
-                    'cost': widget.element.cost.toDouble(),
-                    'count': 1,
-                    'imageurl': widget.element.image,
-                    'name': widget.element.name
-                  }).then((value) => {
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar)
-                          });
-                },
-              ),
+              if (add == 0)
+                AppButton(
+                  width: 60,
+                  padding: EdgeInsets.all(0),
+                  shapeBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32)),
+                  color: bmPrimaryColor,
+                  onTap: () {
+                    var snackBar = const SnackBar(
+                      dismissDirection: DismissDirection.down,
+                      content: Text(
+                        'Your Item is added to the Cart',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                    // showBookBottomSheet(context, element);
+                    fetch();
+                    print(widget.element.image);
+                    _firebase
+                        .collection("cart")
+                        .doc("${loggineduser?.email}")
+                        .collection("cart")
+                        .doc("${widget.element.name}")
+                        .set({
+                      'cost': widget.element.cost.toDouble(),
+                      'count': 1,
+                      'imageurl': widget.element.image,
+                      'name': widget.element.name
+                    }).then((value) => {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar)
+                            });
+                  },
+                  child: Text(add == 0 ? 'ADD' : 'ADDED',
+                      style: boldTextStyle(color: Colors.white, size: 12)),
+                ),
+              if (add != 0)
+                AppButton(
+                  width: 60,
+                  padding: EdgeInsets.all(0),
+                  shapeBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32)),
+                  color: bmPrimaryColor,
+                  onTap: () {
+                    var snackBar = const SnackBar(
+                      dismissDirection: DismissDirection.down,
+                      content: Text(
+                        'Already Added',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    // showBookBottomSheet(context, element);
+                  },
+                  child: Text('ADDED',
+                      style: boldTextStyle(color: Colors.white, size: 12)),
+                ),
             ],
           )
         ],
