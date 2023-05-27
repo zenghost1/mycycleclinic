@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../models/BMServiceListModel.dart';
@@ -17,39 +19,49 @@ class BMServiceComponent extends StatefulWidget {
   BMServiceComponent({required this.element});
 
   @override
-  State<BMServiceComponent> createState() => _BMServiceComponentState();
+  State<BMServiceComponent> createState() => BMServiceComponentState();
 }
 
-class _BMServiceComponentState extends State<BMServiceComponent> {
+class BMServiceComponentState extends State<BMServiceComponent> {
   final _auth = FirebaseAuth.instance;
   int add = 0;
   @override
   void initState() {
     super.initState();
+    fetch(widget.element.name);
     getuser();
   }
 
-  void fetch() async {
+  Future<void> fetch(String name) async {
     var doc = await _firebase
         .collection("cart")
         .doc("${loggineduser?.email}")
         .collection("cart")
         .get();
-    DocumentSnapshotPlatform? foundDoc = doc.docs.firstWhereOrNull(
-        (element) => element.get("name") == widget.element.name);
+    DocumentSnapshotPlatform? foundDoc =
+        doc.docs.firstWhereOrNull((element) => element.get("name") == name);
     if (doc.docs.isEmpty) {
-      setState(() {
-        add = 0;
-      });
+      if (mounted) {
+        setState(() {
+          // Your state update code goes here
+          add = 0;
+        });
+      }
     }
     if (foundDoc != null) {
-      setState(() {
-        add = 1;
-      });
+      if (mounted) {
+        setState(() {
+          // Your state update code goes here
+          add = 1;
+        });
+      }
     } else if (foundDoc == null) {
-      setState(() {
-        add = 0;
-      });
+      if (mounted) {
+        setState(() {
+          // Your state update code goes here
+          add = 0;
+        });
+      }
     }
   }
 
@@ -67,7 +79,6 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
 
   @override
   Widget build(BuildContext context) {
-    fetch();
     return Container(
       decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.2),
@@ -133,7 +144,8 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
                       ),
                     );
                     // showBookBottomSheet(context, element);
-                    fetch();
+                    // fetch(widget.element.name);
+
                     print(widget.element.image);
                     _firebase
                         .collection("cart")
@@ -145,12 +157,14 @@ class _BMServiceComponentState extends State<BMServiceComponent> {
                       'count': 1,
                       'imageurl': widget.element.image,
                       'name': widget.element.name
-                    }).then((value) => {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar)
-                            });
+                    }).then((value) {
+                      setState(() {
+                        add = add + 1;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    });
                   },
-                  child: Text(add == 0 ? 'ADD' : 'ADDED',
+                  child: Text('ADD',
                       style: boldTextStyle(color: Colors.white, size: 12)),
                 ),
               if (add != 0)

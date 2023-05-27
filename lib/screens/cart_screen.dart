@@ -15,10 +15,10 @@ User? loggineduser;
 
 class ShoppingCart extends StatefulWidget {
   @override
-  _ShoppingCartState createState() => _ShoppingCartState();
+  ShoppingCartState createState() => ShoppingCartState();
 }
 
-class _ShoppingCartState extends State<ShoppingCart> {
+class ShoppingCartState extends State<ShoppingCart> {
   double total = 0.00;
   String coupon = '';
   var discount = 0;
@@ -26,7 +26,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
   final AddressBloc addressBloc = AddressBloc();
   final _auth = FirebaseAuth.instance;
 
-  StreamController<QuerySnapshotPlatform> _localStreamController =
+  final StreamController<QuerySnapshotPlatform> localStreamController =
       StreamController.broadcast();
 
   @override
@@ -39,17 +39,22 @@ class _ShoppingCartState extends State<ShoppingCart> {
         .collection("cart")
         .snapshots()
         .listen((QuerySnapshotPlatform querySnapshot) =>
-            _localStreamController.add(querySnapshot));
+            localStreamController.add(querySnapshot));
 
-    _localStreamController.stream.listen((event) {
+    localStreamController.stream.listen((event) {
       var t = 0.0;
       for (var doc in event.docs) {
         t += doc.get("cost") * doc.get("count");
       }
-
-      setState(() {
-        total = t;
-      });
+      if (mounted) {
+        setState(() {
+          // Your state update code goes here
+          total = t;
+        });
+      }
+      // setState(() {
+      //   total = t;
+      // });
     });
 
     getuser();
@@ -83,7 +88,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
 
   @override
   void dispose() {
-    _localStreamController.close();
+    // localStreamController.close();
     textEditingController.dispose();
     super.dispose();
   }
@@ -102,7 +107,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshotPlatform>(
-        stream: _localStreamController.stream,
+        stream: localStreamController.stream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
