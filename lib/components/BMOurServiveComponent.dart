@@ -63,6 +63,106 @@ class _BMOurServiveComponentState extends State<BMOurServiveComponent> {
   //     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {},
   //   );
   // }
+  bool collapse = true;
+
+  getbuilder(String n, String id) {
+    return StreamBuilder(
+        stream: _firebase.collection("subnames").doc(n).snapshots(),
+        builder: (context, snapshot) {
+          var doc = snapshot.data?.get("types");
+          print(doc as List);
+          if (snapshot.hasData) {
+            return SizedBox(
+              height: 400,
+              child: ListView.builder(
+                  itemCount: doc.length,
+                  itemBuilder: (context, i) {
+                    //
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "${doc[i]}",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          StreamBuilder<QuerySnapshotPlatform>(
+                              stream: _firebase
+                                  .collection("stores")
+                                  .doc(id)
+                                  .collection("menus")
+                                  .snapshots(),
+                              builder: (context, innershot) {
+                                final messages = innershot.data?.docs;
+                                List<BMServiceComponent> messagewidget = [];
+                                if (messages != null) {
+                                  for (var message in messages!) {
+                                    final name =
+                                        message.data()?["itemName"] ?? "";
+                                    final cost = message.get("itemPrice");
+                                    final imageurl = message.get("itemImage");
+                                    final subname = message.get("subname");
+                                    // final dis = message.get("itemDescription");
+
+                                    //   messagewidget.add({
+                                    //     "name": name1,
+                                    //     "cost": cost,
+                                    //     "imageurl": imageurl,
+                                    //     "subname": subname
+                                    //   });
+                                    // }
+                                    print(name);
+                                    if (subname == doc[i]) {
+                                      messagewidget.add(BMServiceComponent(
+                                          name: name,
+                                          cost: cost,
+                                          imageurl: imageurl));
+                                    }
+                                  }
+                                }
+
+                                print(messagewidget);
+                                if (innershot.hasData) {
+                                  return Column(
+                                    children: messagewidget,
+                                  );
+                                } else if (innershot.hasError) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.lightBlueAccent,
+                                    ),
+                                  );
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      backgroundColor: Colors.lightBlueAccent,
+                                    ),
+                                  );
+                                }
+                              }),
+                        ],
+                      ),
+                    );
+                  }),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.lightBlueAccent,
+              ),
+            );
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,61 +192,6 @@ class _BMOurServiveComponentState extends State<BMOurServiveComponent> {
       ],
     ).paddingSymmetric(horizontal: 16);
   }
-}
-
-getbuilder(String n, String id) {
-  return StreamBuilder(
-      stream: _firebase.collection("subnames").doc(n).snapshots(),
-      builder: (context, snapshot) {
-        var doc = snapshot.data?.get("types");
-        print(doc as List);
-        return SizedBox(
-          height: 400,
-          child: ListView.builder(
-              itemCount: doc.length,
-              itemBuilder: (context, i) {
-                //
-                return StreamBuilder<QuerySnapshotPlatform>(
-                    stream: _firebase
-                        .collection("stores")
-                        .doc(id)
-                        .collection("menus")
-                        .snapshots(),
-                    builder: (context, innershot) {
-                      final messages = innershot.data?.docs;
-                      List<BMServiceComponent> messagewidget = [];
-
-                      for (var message in messages!) {
-                        final name = message.data()?["itemName"] ?? "";
-                        final cost = message.get("itemPrice");
-                        final imageurl = message.get("itemImage");
-                        final subname = message.get("subname");
-                        // final dis = message.get("itemDescription");
-
-                        //   messagewidget.add({
-                        //     "name": name1,
-                        //     "cost": cost,
-                        //     "imageurl": imageurl,
-                        //     "subname": subname
-                        //   });
-                        // }
-                        print(name);
-                        if (subname == doc[i]) {
-                          messagewidget.add(BMServiceComponent(
-                              name: name, cost: cost, imageurl: imageurl));
-                        }
-                      }
-                      print(messagewidget);
-                      return SizedBox(
-                        height: 400,
-                        child: Column(
-                          children: messagewidget,
-                        ),
-                      );
-                    });
-              }),
-        );
-      });
 }
 
 // getName(String name, String id) {
