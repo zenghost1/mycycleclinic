@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -14,9 +15,11 @@ final _firebase = FirebaseFirestorePlatform.instance;
 User? loggineduser;
 
 class BMServiceComponent extends StatefulWidget {
-  BMServiceListModel element;
-
-  BMServiceComponent({required this.element});
+  BMServiceComponent(
+      {required this.name, required this.cost, required this.imageurl});
+  String name;
+  String imageurl;
+  int cost;
 
   @override
   State<BMServiceComponent> createState() => BMServiceComponentState();
@@ -28,7 +31,7 @@ class BMServiceComponentState extends State<BMServiceComponent> {
   @override
   void initState() {
     super.initState();
-    fetch(widget.element.name);
+    fetch(widget.name);
     getuser();
   }
 
@@ -92,13 +95,13 @@ class BMServiceComponentState extends State<BMServiceComponent> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleText(title: widget.element.name, size: 14, maxLines: 2),
+              titleText(title: widget.name, size: 14, maxLines: 2),
               12.height,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'RS.${widget.element.cost}',
+                    'RS.${widget.cost}',
                     style: secondaryTextStyle(
                       color: bmPrimaryColor,
                       size: 12,
@@ -146,17 +149,17 @@ class BMServiceComponentState extends State<BMServiceComponent> {
                     // showBookBottomSheet(context, element);
                     // fetch(widget.element.name);
 
-                    print(widget.element.image);
+                    print(widget.imageurl);
                     _firebase
                         .collection("cart")
                         .doc("${loggineduser?.email}")
                         .collection("cart")
-                        .doc("${widget.element.name}")
+                        .doc("${widget.name}")
                         .set({
-                      'cost': widget.element.cost.toDouble(),
+                      'cost': widget.cost,
                       'count': 1,
-                      'imageurl': widget.element.image,
-                      'name': widget.element.name
+                      'imageurl': widget.imageurl,
+                      'name': widget.name
                     }).then((value) {
                       setState(() {
                         add = add + 1;

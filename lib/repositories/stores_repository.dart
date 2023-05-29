@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/models.dart';
+import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
 
 class StoresRepository {
   static Future<List<BMCommonCardModel>> getStoresList() async {
@@ -52,7 +51,7 @@ class StoresRepository {
   //               .snapshots(),
 
   static Future<List<BMServiceListModel>> getServicesList(
-      String storeUid) async {
+      String storeUid, String name) async {
     List<BMServiceListModel> storesList = [];
 
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -61,6 +60,7 @@ class StoresRepository {
         .doc(storeUid)
         .collection("menus")
         .where("itemCategory", isEqualTo: "services")
+        .where("subname", isEqualTo: name)
         .get();
 
     querySnapshot.docs.forEach((doc) {
@@ -71,12 +71,14 @@ class StoresRepository {
       String description = doc.data()['itemDescription'] ?? '';
 
       String image = doc.data()['itemImage'] ?? '';
+      String subname = doc.data()["subname"] ?? "";
 
       BMServiceListModel cardModel = BMServiceListModel(
         name: name,
         cost: cost,
         description: description,
         image: image,
+        subname: subname,
       );
 
       storesList.add(cardModel);
@@ -85,16 +87,16 @@ class StoresRepository {
     return storesList;
   }
 
-  static Future<List<BMServiceListModel>> getAccessoriesList(
-      String storeUid) async {
+  static Future<List<dynamic>> getAccessoriesList(
+      String storeUid, String name) async {
     List<BMServiceListModel> storesList = [];
-
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection('stores')
         .doc(storeUid)
         .collection("menus")
         .where("itemCategory", isEqualTo: "accessories")
+        .where("subname", isEqualTo: name)
         .get();
 
     querySnapshot.docs.forEach((doc) {
@@ -105,12 +107,14 @@ class StoresRepository {
       String description = doc.data()['itemDescription'] ?? '';
 
       String image = doc.data()['itemImage'] ?? '';
+      String subname = doc.data()["subname"] ?? "";
 
       BMServiceListModel cardModel = BMServiceListModel(
         name: name,
         cost: cost,
         description: description,
         image: image,
+        subname: subname,
       );
 
       storesList.add(cardModel);
@@ -120,7 +124,7 @@ class StoresRepository {
   }
 
   static Future<List<BMServiceListModel>> getBikepartsList(
-      String storeUid) async {
+      String storeUid, String name) async {
     List<BMServiceListModel> storesList = [];
 
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -129,6 +133,7 @@ class StoresRepository {
         .doc(storeUid)
         .collection("menus")
         .where("itemCategory", isEqualTo: "bikeparts")
+        .where("subname", isEqualTo: name)
         .get();
 
     querySnapshot.docs.forEach((doc) {
@@ -139,12 +144,13 @@ class StoresRepository {
       String description = doc.data()['itemDescription'] ?? '';
 
       String image = doc.data()['itemImage'] ?? '';
-
+      String subname = doc.data()["subname"] ?? "";
       BMServiceListModel cardModel = BMServiceListModel(
         name: name,
         cost: cost,
         description: description,
         image: image,
+        subname: subname,
       );
 
       storesList.add(cardModel);
@@ -153,7 +159,8 @@ class StoresRepository {
     return storesList;
   }
 
-  static Future<List<BMServiceListModel>> getBikesList(String storeUid) async {
+  static Future<List<BMServiceListModel>> getBikesList(
+      String storeUid, String name) async {
     List<BMServiceListModel> storesList = [];
 
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
@@ -162,6 +169,7 @@ class StoresRepository {
         .doc(storeUid)
         .collection("menus")
         .where("itemCategory", isEqualTo: "bikes")
+        .where("subname", isEqualTo: name)
         .get();
 
     querySnapshot.docs.forEach((doc) {
@@ -172,12 +180,14 @@ class StoresRepository {
       String description = doc.data()['itemDescription'] ?? '';
 
       String image = doc.data()['itemImage'] ?? '';
+      String subname = doc.data()["subname"] ?? "";
 
       BMServiceListModel cardModel = BMServiceListModel(
         name: name,
         cost: cost,
         description: description,
         image: image,
+        subname: subname,
       );
 
       storesList.add(cardModel);
