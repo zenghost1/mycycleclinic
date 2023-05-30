@@ -3,11 +3,11 @@ class BMServiceListModel {
   int cost;
   String image;
   String description;
-  String subname;
-  BMServiceListModel(
-      {required this.name,
-      required this.cost,
-      required this.image,
-      required this.description,
-      required this.subname});
+
+  BMServiceListModel({
+    required this.name,
+    required this.cost,
+    required this.image,
+    required this.description,
+  });
 }

@@ -1,37 +1,33 @@
-import 'dart:async';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import '../models/BMServiceListModel.dart';
-import '../utils/BMColors.dart';
-import '../utils/BMCommonWidgets.dart';
+import '';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart';
 import 'package:collection/collection.dart';
+
+import '../models/BMServiceListModel.dart';
+import '../utils/BMColors.dart';
+import '../utils/BMCommonWidgets.dart';
 
 final _firebase = FirebaseFirestorePlatform.instance;
 
 User? loggineduser;
 
-class BMServiceComponent extends StatefulWidget {
-  BMServiceComponent(
-      {required this.name, required this.cost, required this.imageurl});
-  String name;
-  String imageurl;
-  int cost;
+class BMServiceComponent2 extends StatefulWidget {
+  BMServiceListModel element;
+
+  BMServiceComponent2({required this.element});
 
   @override
-  State<BMServiceComponent> createState() => BMServiceComponentState();
+  State<BMServiceComponent2> createState() => _BMServiceComponent2State();
 }
 
-class BMServiceComponentState extends State<BMServiceComponent> {
+class _BMServiceComponent2State extends State<BMServiceComponent2> {
   final _auth = FirebaseAuth.instance;
   int add = 0;
   @override
   void initState() {
     super.initState();
-    fetch(widget.name);
     getuser();
   }
 
@@ -95,26 +91,19 @@ class BMServiceComponentState extends State<BMServiceComponent> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleText(title: widget.name, size: 14, maxLines: 2),
+              titleText(title: widget.element.name, size: 14, maxLines: 2),
               12.height,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'RS.${widget.cost}',
+                    'RS.${widget.element.cost}',
                     style: secondaryTextStyle(
                       color: bmPrimaryColor,
                       size: 12,
                     ),
                   ),
                   16.width,
-                  // Text(
-                  //   element.time,
-                  //   style: secondaryTextStyle(
-                  //     color:bmPrimaryColor,
-                  //     size: 12,
-                  //   ),
-                  // ),
                 ],
               )
             ],
@@ -128,7 +117,11 @@ class BMServiceComponentState extends State<BMServiceComponent> {
                   border: Border.all(color: bmPrimaryColor),
                 ),
                 padding: EdgeInsets.all(6),
-                child: Icon(Icons.info, color: bmPrimaryColor),
+                child: GestureDetector(
+                    onTap: () {
+                      showBookBottomSheet(context, widget.element);
+                    },
+                    child: Icon(Icons.info, color: bmPrimaryColor)),
               ),
               8.width,
               if (add == 0)
@@ -147,25 +140,25 @@ class BMServiceComponentState extends State<BMServiceComponent> {
                       ),
                     );
                     // showBookBottomSheet(context, element);
-                    // fetch(widget.element.name);
-
-                    print(widget.imageurl);
+                    // fetch();
+                    //print(widget.element.image);
                     _firebase
                         .collection("cart")
                         .doc("${loggineduser?.email}")
                         .collection("cart")
-                        .doc("${widget.name}")
+                        .doc("${widget.element.name}")
                         .set({
-                      'cost': widget.cost.toDouble(),
+                      'cost': widget.element.cost.toDouble(),
                       'count': 1,
-                      'imageurl': widget.imageurl,
-                      'name': widget.name
-                    }).then((value) {
-                      setState(() {
-                        add = add + 1;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    });
+                      'imageurl': widget.element.image,
+                      'name': widget.element.name
+                    }).then((value) => {
+                              setState(() {
+                                add = add + 1;
+                              }),
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar),
+                            });
                   },
                   child: Text('ADD',
                       style: boldTextStyle(color: Colors.white, size: 12)),
@@ -197,4 +190,71 @@ class BMServiceComponentState extends State<BMServiceComponent> {
       ).paddingSymmetric(vertical: 8),
     );
   }
+}
+
+void showBookBottomSheet(BuildContext context, BMServiceListModel element) {
+  showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: true,
+      isDismissible: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: radiusOnly(topLeft: 30, topRight: 30)),
+      builder: (context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () {
+                    finish(context);
+                  },
+                  icon: const Icon(Icons.cancel_rounded,
+                      color: bmTextColorDarkMode),
+                ),
+              ),
+              titleText(title: element.name, size: 24),
+              16.height,
+              Image.network(
+                element.image,
+                fit: BoxFit.cover,
+              ),
+              // Text(
+              //   "NULL available",
+              //   style: primaryTextStyle(color:  bmSpecialColorDark),
+              // ),
+              20.height,
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  titleText(
+                      title: "Rs. ${element.cost.toString()}",
+                      size: 16,
+                      maxLines: 2),
+                  14.height,
+                  Text(
+                    element.description,
+                    style: secondaryTextStyle(color: bmPrimaryColor),
+                  )
+                ],
+              ),
+              // AppButton(
+              //   //padding: EdgeInsets.all(0),
+              //   shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+              //   child: Text('Book Now', style: boldTextStyle(color: Colors.white, size: 12)),
+              //   color: bmPrimaryColor,
+              //   onTap: () {
+              //     // BMCalenderScreen(element: element, isStaffBooking: false).launch(context);
+              //   },
+              // ),
+            ],
+          ).paddingAll(16);
+        });
+      });
 }

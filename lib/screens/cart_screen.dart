@@ -32,7 +32,7 @@ class ShoppingCartState extends State<ShoppingCart> {
   @override
   void initState() {
     super.initState();
-
+    getuser();
     _firebase
         .collection("cart")
         .doc("${loggineduser?.email}")
@@ -56,8 +56,6 @@ class ShoppingCartState extends State<ShoppingCart> {
       //   total = t;
       // });
     });
-
-    getuser();
   }
 
   void getuser() async {
