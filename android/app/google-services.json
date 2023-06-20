@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "493750287966",
+    "project_id": "mycycle-8a317",
+    "storage_bucket": "mycycle-8a317.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493750287966:android:cd9b2fadd308d60a3cfecf",
+        "android_client_info": {
+          "package_name": "com.example.mycycleclinic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493750287966-t213vqu9ktce3kj6q5jrrpm2qjurltl0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCST1UwqwMqnbhRMdAcReBVNp0lW-eWccY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493750287966-t213vqu9ktce3kj6q5jrrpm2qjurltl0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

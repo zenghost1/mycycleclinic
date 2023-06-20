@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>493750287966-ju7hm221e6luj6okj635rcp88mtvm7t3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.493750287966-ju7hm221e6luj6okj635rcp88mtvm7t3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAqe4bY1p8c9bTiqDk-3O7Oz-CXebGpkWA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>493750287966</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.mycycleclinic</string>
+	<key>PROJECT_ID</key>
+	<string>mycycle-8a317</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mycycle-8a317.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:493750287966:ios:f904853528d42ab23cfecf</string>
+</dict>
+</plist>
